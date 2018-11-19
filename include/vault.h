@@ -16,15 +16,20 @@ namespace vault {
     // Note: an existing file will be overwritten and truncated.
     token_t create(const std::string &path, const std::string &password, const userdata_t &userdata);
 
+    token_t create(const std::string &path, const std::string &password);
+
     // Reads and decrypts the encrypted file protected with the password.
     // If a wrong password is specified, this throws runtime_error exception.
-    userdata_t read(const std::string &path, const std::string &password, token_t *token = nullptr);
+    userdata_t read(const std::string &path, const std::string &password, const std::string &key, token_t *token = nullptr);
 
     // Reads and decrypts the encrypted file using the token instead of a password.
-    userdata_t read(const std::string &path, const token_t &token);
+    userdata_t read(const std::string &path, const token_t &token, const std::string & key);
 
     // Updates the encrypted file contents using the token instead of a password.
-    void update(const std::string &path, const token_t &token, const userdata_t &userdata);
+    void update(const std::string &path, const token_t &token, const userdata_t &userdata, const std::string & key);
+
+    // Updates the encrypted file contents using the token instead of a password.
+    void add(const std::string &path, const token_t &token, const userdata_t &userdata, const std::string & key);
 
 }
 

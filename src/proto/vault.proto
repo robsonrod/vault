@@ -1,19 +1,25 @@
-syntax = "proto3";
+syntax = "proto2";
 package vault;
 
+message Vault {
+  required Authentication authentication = 1;
+  repeated Store store = 2;
+}
+
 message Store {
-    Authentication authentication = 1;
-    bytes contents = 2;
+    required string key = 1;
+    required bytes contents = 2;
 }
 
 message Authentication {
-    int32 iterations = 1;
-    bytes salt = 2;
-    bytes hmac = 3;
+    required int32 iterations = 1;
+    required bytes salt = 2;
+    required bytes hmac = 3;
 }
 
 message Token {
-    Authentication authentication = 1;
-    bytes aes_key = 2;
-    bytes aes_iv = 3;
+    required Authentication authentication = 1;
+    required bytes aes_key = 2;
+    required bytes aes_iv = 3;
+    required bytes mac_key = 4;
 }

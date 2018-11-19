@@ -3,6 +3,7 @@
 #include <cassert>
 #include <openssl/hmac.h>
 #include "secret.h"
+#include <openssl/sha.h>
 
 const int MIN_ITERATIONS = 1000;
 const int BENCHMARK_ITERATIONS = 10000;
@@ -19,10 +20,11 @@ int vault::estimate_iterations(const std::string &password,
     vault::blob_t secretKey(secret_size, '\0');
     auto beginTime = std::chrono::steady_clock::now();
 
-    if (PKCS5_PBKDF2_HMAC_SHA1(
+    if (PKCS5_PBKDF2_HMAC(
             password.data(), (int)password.size(),
             salt.data(), (int)salt.size(),
             BENCHMARK_ITERATIONS,
+	    EVP_sha512(),
             (int)secretKey.size(), secretKey.data()) != 1) {
         return MIN_ITERATIONS;
     }
@@ -49,10 +51,11 @@ vault::blob_t vault::generate_secret(const std::string &password,
 
     vault::blob_t secretKey(secret_size, '\0');
 
-    if (PKCS5_PBKDF2_HMAC_SHA1(
+    if (PKCS5_PBKDF2_HMAC(
             password.data(), (int)password.size(),
             salt.data(), (int)salt.size(),
             iterations,
+	    EVP_sha512(),
             (int)secretKey.size(), secretKey.data()) != 1) {
         return vault::blob_t();
     }
@@ -69,7 +72,7 @@ vault::blob_t vault::calc_hmac(const vault::blob_t &secret, int hmac_size)
     vault::blob_t result(hmac_size, '\0');
     auto length = (unsigned int)hmac_size;
 
-    HMAC(EVP_sha256(),
+    HMAC(EVP_sha512(),
          mac.data(), (int)mac.size(),
          secret.data(), (int)secret.size(),
          result.data(), &length);
