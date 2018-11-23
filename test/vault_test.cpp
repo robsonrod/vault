@@ -20,7 +20,7 @@ TEST(VaultTest, BasicCreateUpdateReadTest) {
     std::vector<uint8_t> contents1(StringToByteArray("initial contents"));
     std::vector<uint8_t> contents2(StringToByteArray("updated"));
 
-    auto token = vault::create("vault.bin", "password", contents1);
+    auto token = vault::create("vault.bin", "password", "test", contents1);
     EXPECT_FALSE(token.empty());
 
     vault::update("vault.bin", token, contents2, "test");
@@ -34,7 +34,7 @@ TEST(VaultTest, BasicCreateUpdateReadTest) {
 TEST(VaultTest, ReadWithPasswordTest) {
     std::vector<uint8_t> contents(StringToByteArray("initial contents"));
 
-    auto token = vault::create("vault.bin", "password", contents);
+    auto token = vault::create("vault.bin", "password", "test", contents);
     EXPECT_FALSE(token.empty());
 
     vault::token_t read_token;
@@ -48,7 +48,7 @@ TEST(VaultTest, ReadWithPasswordAddTest) {
     std::vector<uint8_t> contents(StringToByteArray("initial contents"));
     std::vector<uint8_t> contents2(StringToByteArray("updated"));
 
-    auto token = vault::create("vault.bin", "password", contents);
+    auto token = vault::create("vault.bin", "password", "test", contents);
     EXPECT_FALSE(token.empty());
 
     vault::token_t read_token;
@@ -65,7 +65,7 @@ TEST(VaultTest, ReadWithPasswordAddTest) {
 TEST(VaultTest, ReadWithWrongPasswordTest) {
     std::vector<uint8_t> contents(StringToByteArray("initial contents"));
 
-    auto token = vault::create("vault.bin", "password", contents);
+    auto token = vault::create("vault.bin", "password", "key", contents);
     EXPECT_FALSE(token.empty());
 
     EXPECT_THROW(vault::read("vault.bin", "wrong password", "test"), std::runtime_error);
@@ -74,7 +74,7 @@ TEST(VaultTest, ReadWithWrongPasswordTest) {
 TEST(VaultTest, ReadWithWrongTokenTest) {
     std::vector<uint8_t> contents(StringToByteArray("initial contents"));
 
-    auto token = vault::create("vault.bin", "password", contents);
+    auto token = vault::create("vault.bin", "password", "test", contents);
     EXPECT_FALSE(token.empty());
 
     std::reverse(std::begin(token), std::end(token));

@@ -1,3 +1,4 @@
+
 #include <vault.h>
 #include <fstream>
 #include <sstream>
@@ -31,7 +32,7 @@ static string tohex(const blob_t &blob) {
     return hex_tmp;
 }
 
-token_t vault::create(const string &path, const string &password, const userdata_t &userdata)
+token_t vault::create(const string &path, const string &password, const string &key, const userdata_t &userdata)
 {
     blob_t salt = rand(SALT_SIZE);
     const int secret_size = AES_KEY_SIZE + IV_SIZE + HMAC_KEY_SIZE;
@@ -55,7 +56,7 @@ token_t vault::create(const string &path, const string &password, const userdata
     Vault vault;
     vault.set_allocated_authentication(authentication);
     auto store = vault.add_store();
-    store->set_key("test");
+    store->set_key(key);
     store->set_contents(encrypted.data(), encrypted.size());
 
     fstream file(path, ios::out | ios::binary | ios::trunc);

@@ -14,7 +14,7 @@ namespace vault {
     // Creates a new password protected file from userdata.
     // Returns token that can be used to authorize read() or update() without providing a password.
     // Note: an existing file will be overwritten and truncated.
-    token_t create(const std::string &path, const std::string &password, const userdata_t &userdata);
+    token_t create(const std::string &path, const std::string &password, const std::string &key, const userdata_t &userdata);
 
     token_t create(const std::string &path, const std::string &password);
 
